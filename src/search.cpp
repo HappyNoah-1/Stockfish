@@ -1139,6 +1139,8 @@ moves_loop:  // When in check, search starts here
 
     int moveCount = 0;
 
+    auto& pawnHistory = sharedHistory.pawn_entry(pos);
+
     // Step 14. Loop through all pseudo-legal moves until no moves remain
     // or a beta cutoff occurs.
     while ((move = mp.next_move()) != Move::none())
@@ -1222,7 +1224,7 @@ moves_loop:  // When in check, search starts here
             {
                 int history = (*contHist[0])[movedPiece][move.to_sq()]
                             + (*contHist[1])[movedPiece][move.to_sq()]
-                            + sharedHistory.pawn_entry(pos)[movedPiece][move.to_sq()];
+                            + pawnHistory[movedPiece][move.to_sq()];
 
                 // Continuation history based pruning
                 if (history < -4136 * depth)

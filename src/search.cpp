@@ -647,13 +647,12 @@ void Search::Worker::do_move(Position& pos, const Move move, StateInfo& st, Stac
     do_move(pos, move, st, pos.gives_check(move), pos.capture_stage(move), ss);
 }
 
-void Search::Worker::do_move(
-  Position& pos,
-  const Move move,
-  StateInfo& st,
-  const bool givesCheck,
-  const bool capture,
-  Stack* const ss) {
+void Search::Worker::do_move(Position&    pos,
+                             const Move   move,
+                             StateInfo&   st,
+                             const bool   givesCheck,
+                             const bool   capture,
+                             Stack* const ss) {
     // prefetch_key() does not model castling, en passant or promotion exactly.
     // The correction-history prefetches also approximate castling and promotion.
     // For these rare moves the prefetches land on unused lines.

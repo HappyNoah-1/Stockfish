@@ -1387,6 +1387,13 @@ void Position::undo_null_move() {
 // value of the move is greater or equal to the given threshold. We'll use an
 // algorithm similar to alpha-beta pruning with a null window.
 bool Position::see_ge(Move m, int threshold) const {
+    if (m.type_of() != NORMAL)
+        return VALUE_ZERO >= threshold;
+
+    return see_ge(m, threshold, piece_on(m.from_sq()), piece_on(m.to_sq()));
+}
+
+bool Position::see_ge(Move m, int threshold, Piece movedPiece, Piece capturedPiece) const {
 
     assert(m.is_ok());
 
@@ -1398,11 +1405,11 @@ bool Position::see_ge(Move m, int threshold) const {
 
     assert(piece_on(from) != NO_PIECE);
 
-    int swap = PieceValue[piece_on(to)] - threshold;
+    int swap = PieceValue[capturedPiece] - threshold;
     if (swap < 0)
         return false;
 
-    swap = PieceValue[piece_on(from)] - swap;
+    swap = PieceValue[movedPiece] - swap;
     if (swap <= 0)
         return true;
 

@@ -1143,7 +1143,6 @@ moves_loop:  // When in check, search starts here
     value = bestValue;
 
     int moveCount = 0;
-    const Value nonPawnMaterial = pos.non_pawn_material(us);
 
     // Step 14. Loop through all pseudo-legal moves until no moves remain
     // or a beta cutoff occurs.
@@ -1193,7 +1192,7 @@ moves_loop:  // When in check, search starts here
 
         // Step 15. Pruning at shallow depths.
         // Depth conditions are important for mate finding.
-        if (!rootNode && nonPawnMaterial && !is_loss(bestValue))
+        if (!rootNode && pos.non_pawn_material(us) && !is_loss(bestValue))
         {
             // Skip quiet moves if movecount exceeds our threshold
             if (moveCount >= (3 + depth * depth) / (2 - improving))
@@ -1220,8 +1219,8 @@ moves_loop:  // When in check, search starts here
                 // SEE based pruning for captures and checks.
                 // Avoid pruning sacrifices of our last piece for stalemate.
                 int margin = 177 * depth + captHist * 34 / 1024;
-                if ((alpha >= VALUE_DRAW || nonPawnMaterial != PieceValue[movedPiece])
-                    && !pos.see_ge(move, -margin))
+                if ((alpha >= VALUE_DRAW || pos.non_pawn_material(us) != PieceValue[movedPiece])
+                    && !pos.see_ge(move, -margin, movedPiece, capturedPiece))
                     continue;
             }
             else if (!ss->followPV || !PvNode)

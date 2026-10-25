@@ -465,10 +465,14 @@ void Position::set_castling_right(Color c, Square rfrom) {
 
 // Sets pinners and where stm can give check. Squares threatened by ~stm are
 // computed lazily by compute_threats().
+template<bool UpdateSliderBlockers>
 void Position::set_extra_bitboards() const {
 
-    update_slider_blockers(WHITE);
-    update_slider_blockers(BLACK);
+    if constexpr (UpdateSliderBlockers)
+    {
+        update_slider_blockers(WHITE);
+        update_slider_blockers(BLACK);
+    }
 
     Square ksq                              = square<KING>(~sideToMove);
     const auto [bishopAttacks, rookAttacks] = both_attacks_bb(ksq, pieces());
@@ -1336,7 +1340,8 @@ void Position::do_null_move(StateInfo& newSt) {
 
     sideToMove = ~sideToMove;
 
-    set_extra_bitboards();
+    // The board and king squares are unchanged; reuse copied blocker caches.
+    set_extra_bitboards<false>();
 
     st->repetition = 0;
 

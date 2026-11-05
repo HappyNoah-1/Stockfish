@@ -52,9 +52,15 @@
 
 namespace Stockfish {
 
+int lmr_divisor_base = 3000;
+int lmr_divisor_coeff = 7;
+
+TUNE(SetRange(2000, 4000), lmr_divisor_base,
+     SetRange(1, 18), lmr_divisor_coeff);
+
 inline int lmr_divisor(int depth) {
     int d = std::min(depth, 16);
-    return 3000 + 7 * (d - 8) * (d - 8);
+    return lmr_divisor_base + lmr_divisor_coeff * (d - 8) * (d - 8);
 }
 
 namespace TB = Tablebases;
